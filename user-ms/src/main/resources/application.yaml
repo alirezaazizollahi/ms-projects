@@ -4,12 +4,8 @@ server:
 spring:
   application:
     name: user-ms
-
-  datasource:
-    url: jdbc:postgresql://localhost:5432/userdb
-    username: admin
-    password: admin123
-    driver-class-name: org.postgresql.Driver
+  mongodb:
+    uri: mongodb://admin:admin123@localhost:27017/userdb?authSource=admin
 
   jpa:
     hibernate:

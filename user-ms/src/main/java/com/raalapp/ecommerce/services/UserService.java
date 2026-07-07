@@ -98,9 +98,9 @@ public class UserService {
         return response;
     }
 
-    private Optional<Long> parseUserId(String id) {
+    private Optional<String> parseUserId(String id) {
         try {
-            return Optional.of(Long.valueOf(id));
+            return Optional.of(id);
         } catch (NumberFormatException ex) {
             return Optional.empty();
         }
