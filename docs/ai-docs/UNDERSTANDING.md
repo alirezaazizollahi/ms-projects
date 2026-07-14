@@ -2,10 +2,11 @@
 
 ## Repository Shape
 
-The repository root contains three Spring Boot microservices and shared infrastructure files:
+The repository root contains Spring Boot microservices, a Spring Cloud Config Server, and shared infrastructure files:
 
 ```text
 ms-projects/
+  configserver/
   files/
     docker-compose-postgres-pagadmin.yml
   order-ms/
@@ -17,17 +18,18 @@ Each microservice is currently an independent Maven project. There is no parent 
 
 ## Architecture
 
-The current architecture is a simple synchronous ecommerce backend split by business capability:
+The current architecture is a simple ecommerce backend split by business capability, with a config server added for centralized external configuration:
 
 ```text
 Client
   |
+  |-- configserver : Spring Cloud Config Server backed by Git
   |-- user-ms    : user profiles and addresses
   |-- product-ms : product catalog
   |-- order-ms   : cart and order placement
 ```
 
-There is currently no API gateway, service discovery, message broker, shared authentication layer, or inter-service HTTP client implementation in the code. Some comments indicate planned Keycloak and product-service validation work, but the first version stores local IDs and uses fixed placeholder values in the order service.
+There is currently no API gateway, service discovery, message broker, shared authentication layer, or inter-service HTTP client implementation in the code. Some comments indicate planned Keycloak and product-service validation work, but the first version stores local IDs and uses fixed placeholder values in the order service. The config server is configured to read from `https://github.com/alirezaazizollahi/app-configuration.git`.
 
 ## Stack
 
@@ -41,10 +43,21 @@ There is currently no API gateway, service discovery, message broker, shared aut
 | Build Tool | Maven Wrapper per service |
 | Boilerplate | Lombok |
 | Mapping | MapStruct configured in user/product services; manually mapped in most service code |
+| External Config | Spring Cloud Config Server in `configserver` |
 | Tests | Spring Boot generated context tests exist per service |
 | Local Infra | Docker Compose for PostgreSQL and pgAdmin |
 
 ## Service Responsibilities
+
+### Config Server
+
+Owns externalized configuration delivery:
+
+- Runs on port `8888`.
+- Uses Spring Cloud Config Server with `@EnableConfigServer`.
+- Reads configuration from the Git repository configured under `spring.cloud.config.server.git`.
+- Authenticates to the Git repository with the `APP_CONFIGURATION_TOKEN` environment variable.
+- Enables RSA-backed encryption using `config-server.jks`.
 
 ### User Service
 
@@ -82,4 +95,4 @@ Owns cart and order data:
 - No migrations tool is configured; Hibernate `ddl-auto: update` manages schema changes.
 - Databases named in service configs differ from the Docker Compose default database.
 - No root-level build orchestration exists for all services together.
-
+- Config server keystore password and alias are currently stored in application YAML and should be externalized before production use.

@@ -1,0 +1,11 @@
+keytool -genkeypair -alias config-server-key -keyalg RSA -keysize 2048 -validity 365 -keystore config-server.jks -storepass changeit -keypass changeit -dname "CN=Config Server, OU=Spring Cloud, O=Vasl, L=Tehran"
+
+explanation:
+-alias: name of the key inside the keystore
+-keyalg: algorithm (RSA is most common)
+-keysize: key length (2048 or 4096 recommended)
+-validity: days the certificate is valid
+-keystore: file to store the key
+-storepass: password for keystore
+-keypass: password for the key
+-dname: distinguished name (your identity info)

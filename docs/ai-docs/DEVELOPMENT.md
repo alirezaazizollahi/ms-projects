@@ -40,6 +40,13 @@ admin123
 
 Use a separate terminal for each service.
 
+Config server:
+
+```bash
+cd configserver
+APP_CONFIGURATION_TOKEN=<github-token> ./mvnw spring-boot:run
+```
+
 User service:
 
 ```bash
@@ -71,6 +78,7 @@ Per service:
 
 Current tests are generated Spring Boot context tests:
 
+- `configserver/src/test/java/com/raalapp/ConfigserverApplicationTests.java`
 - `user-ms/src/test/java/com/raalapp/ecommerce/UserApplicationTests.java`
 - `product-ms/src/test/java/com/raalapp/ecommerce/ProductApplicationTests.java`
 - `order-ms/src/test/java/com/raalapp/ecommerce/OrderApplicationTests.java`
@@ -94,8 +102,8 @@ Current tests are generated Spring Boot context tests:
 - Add database initialization for `userdb`, `product`, and `order`.
 - Replace hardcoded cart price with product lookup from `product-ms`.
 - Validate user IDs through `user-ms` or authentication claims.
+- Externalize config server keystore password and alias before production use.
 - Add request validation with Jakarta Bean Validation.
 - Add global exception handling for bad IDs and validation failures.
 - Add service integration tests for controller and service behavior.
 - Decide whether service names and artifact IDs should be consistent.
-

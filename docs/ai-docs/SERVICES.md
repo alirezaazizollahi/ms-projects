@@ -1,5 +1,40 @@
 # Services
 
+## Config Server
+
+Path: `configserver`
+
+Runtime:
+
+- Application class: `com.raalapp.ConfigserverApplication`
+- Port: `8888`
+- Spring application name: `configserver`
+- No local database
+
+### Main Packages
+
+| Package | Responsibility |
+| --- | --- |
+| `com.raalapp` | Spring Boot application entry point and config server enablement |
+
+### Behavior
+
+`ConfigserverApplication` enables Spring Cloud Config Server with `@EnableConfigServer`.
+
+The server reads externalized configuration from:
+
+```text
+https://github.com/alirezaazizollahi/app-configuration.git
+```
+
+The Git backend uses:
+
+- Default label: `master`
+- Username: `alirezaazizollahi`
+- Password token source: `APP_CONFIGURATION_TOKEN`
+
+The service is also configured for RSA-backed property encryption through `config-server.jks` with alias `config-server-key`.
+
 ## User Service
 
 Path: `user-ms`
@@ -236,4 +271,3 @@ Custom methods:
 - Cart price is fixed and does not come from product service.
 - Order total currently sums item price values only; it does not multiply by quantity for the stored total.
 - `OrderItemDTO.subTotal` does multiply price by quantity in the response.
-

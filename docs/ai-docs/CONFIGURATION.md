@@ -4,11 +4,53 @@
 
 | Service | Port | Config File |
 | --- | ---: | --- |
+| Config Server | `8888` | `configserver/src/main/resources/application.yaml` |
 | User Service | `8082` | `user-ms/src/main/resources/application.yaml` |
 | Product Service | `8083` | `product-ms/src/main/resources/application.yaml` |
 | Order Service | `8084` | `order-ms/src/main/resources/application.yaml` |
 | pgAdmin | `5050` | `files/docker-compose-postgres-pagadmin.yml` |
 | PostgreSQL | `5432` | `files/docker-compose-postgres-pagadmin.yml` |
+
+## Config Server
+
+Path: `configserver`
+
+Runtime:
+
+- Spring application name: `configserver`
+- Port: `8888`
+- Main class: `com.raalapp.ConfigserverApplication`
+- Spring Cloud Config Server is enabled with `@EnableConfigServer`
+
+Git backend:
+
+```yaml
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/alirezaazizollahi/app-configuration.git
+          default-label: master
+          username: alirezaazizollahi
+          password: ${APP_CONFIGURATION_TOKEN}
+```
+
+Required environment:
+
+- `APP_CONFIGURATION_TOKEN`: token used by the config server to access the Git-backed configuration repository.
+
+Encryption:
+
+```yaml
+encrypt:
+  key-store:
+    location: config-server.jks
+    password: changeit
+    alias: config-server-key
+```
+
+The keystore file is currently stored at `configserver/src/main/resources/config-server.jks`. The helper command used to generate it is documented in `docs/keytool-command.txt`.
 
 ## Database Configuration
 
@@ -69,6 +111,12 @@ Common service dependencies:
 - `spring-boot-starter-data-jpa-test`
 - `spring-boot-starter-webmvc-test`
 
+Config server dependencies:
+
+- `org.springframework.boot:spring-boot-starter-parent:4.1.0`
+- `org.springframework.cloud:spring-cloud-config-server`
+- Spring Cloud dependency BOM `2025.1.2`
+
 Additional mapping dependency:
 
 - `org.mapstruct:mapstruct:1.4.2.Final`
@@ -82,4 +130,3 @@ All three Maven projects configure these repositories and plugin repositories:
 
 - `https://mvnhub.ir/`
 - `https://mirror-maven.runflare.com/maven2`
-

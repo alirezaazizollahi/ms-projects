@@ -19,6 +19,43 @@ Consequence:
 - `CHANGES.md` becomes the lightweight running history.
 - `DECISIONS.md` becomes the place for architectural reasoning instead of burying decisions in code comments.
 
+## 2026-07-14: Move AI Documentation Under `docs/ai-docs`
+
+Context:
+
+- The repository documentation is intended to be maintained as AI-readable project context.
+- Keeping that context in a dedicated subdirectory makes its purpose clearer.
+
+Decision:
+
+- Move the existing markdown documentation set from `docs/` to `docs/ai-docs/`.
+
+Consequence:
+
+- Future AI documentation updates should be made under `docs/ai-docs/`.
+- Non-markdown operational helper files can remain directly under `docs/` when appropriate.
+
+## 2026-07-14: Add Git-Backed Spring Cloud Config Server
+
+Context:
+
+- Services need a central place to retrieve externalized configuration.
+- The configuration source is a Git repository.
+- Sensitive properties need encryption support.
+
+Decision:
+
+- Add `configserver` as an independent Spring Cloud Config Server running on port `8888`.
+- Configure the server to read from `https://github.com/alirezaazizollahi/app-configuration.git` on label `master`.
+- Read the Git access token from `APP_CONFIGURATION_TOKEN`.
+- Configure RSA-backed property encryption with `config-server.jks`.
+
+Consequence:
+
+- Runtime startup now requires `APP_CONFIGURATION_TOKEN` when the config server needs authenticated Git access.
+- The keystore enables encrypted property workflows through Spring Cloud Config.
+- Keystore secrets are still present in YAML and should be externalized before production use.
+
 ## Current Architecture: Independent Spring Boot Maven Services
 
 Context:
@@ -83,4 +120,3 @@ Consequence:
 
 - Product list and lookup endpoints only return active products.
 - Historical references can remain meaningful.
-

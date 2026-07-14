@@ -2,6 +2,20 @@
 
 Use this file as the human-readable change log for the project. Add entries for code, configuration, database, API, dependency, and documentation changes.
 
+## 2026-07-14
+
+### Added
+
+- Added `configserver` as a Spring Cloud Config Server running on port `8888`.
+- Configured the config server to use the Git backend at `https://github.com/alirezaazizollahi/app-configuration.git` with default label `master`.
+- Added RSA keystore encryption configuration using `config-server.jks` and alias `config-server-key`.
+- Added `docs/keytool-command.txt` with the keytool command used to generate the config server keystore.
+
+### Changed
+
+- Replaced the config server Git password value with the `APP_CONFIGURATION_TOKEN` environment variable.
+- Moved AI-maintained markdown documentation from `docs/` to `docs/ai-docs/`.
+
 ## 2026-05-20
 
 ### Added
@@ -38,4 +52,3 @@ Use this file as the human-readable change log for the project. Add entries for 
 - No database migration tool.
 - Docker Compose creates `mydb`, but service configs expect `userdb`, `product`, and `order`.
 - Cart item price is hardcoded in `order-ms`.
-

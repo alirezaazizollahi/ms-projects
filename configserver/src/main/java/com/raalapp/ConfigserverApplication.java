@@ -9,6 +9,9 @@ import org.springframework.cloud.config.server.EnableConfigServer;
 public class ConfigserverApplication {
 
 	public static void main(String[] args) {
+
+        String aa = "salam/khobi?";
+        System.out.println(aa.split("/"));
 		SpringApplication.run(ConfigserverApplication.class, args);
 	}
 

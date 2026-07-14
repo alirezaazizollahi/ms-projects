@@ -12,5 +12,15 @@ spring:
           uri: https://github.com/alirezaazizollahi/app-configuration.git
           default-label: master
           username: alirezaazizollahi
-          password: ${APP_CONFIGUATION_TOKEN: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}
-#          password: ${APP_CONFIGURATION_TOKEN}
+          password: ${APP_CONFIGURATION_TOKEN}
+
+# encrypt property using AES algorithm
+#encrypt:
+#  key: 0123456789abcdef
+
+# encrypt property using RSA algorithm and key store
+encrypt:
+  key-store:
+    location: config-server.jks
+    password: changeit
+    alias: config-server-key
