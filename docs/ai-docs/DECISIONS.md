@@ -56,6 +56,26 @@ Consequence:
 - The keystore enables encrypted property workflows through Spring Cloud Config.
 - Keystore secrets are still present in YAML and should be externalized before production use.
 
+## 2026-07-18: Use Native Config Server Backend for Local Config Demo
+
+Context:
+
+- The config demo needs local configuration files served directly by the config server.
+- Keeping the demo configuration in the repository avoids requiring a remote Git configuration repository for local runs.
+
+Decision:
+
+- Activate the config server `native` profile.
+- Serve configuration from `classpath:/config`.
+- Add native `configdemo` default, dev, and prod profile files under `configserver/src/main/resources/config`.
+- Keep the previous Git backend settings commented for future remote configuration use.
+
+Consequence:
+
+- Running the config server locally no longer requires `APP_CONFIGURATION_TOKEN`.
+- `configdemo` can retrieve default and profile-specific configuration from the config server classpath.
+- Remote Git-backed configuration must be explicitly re-enabled before it is used again.
+
 ## Current Architecture: Independent Spring Boot Maven Services
 
 Context:

@@ -44,8 +44,10 @@ Config server:
 
 ```bash
 cd configserver
-APP_CONFIGURATION_TOKEN=<github-token> ./mvnw spring-boot:run
+./mvnw spring-boot:run
 ```
+
+The config server currently runs with the `native` profile and loads configuration from `configserver/src/main/resources/config`. `APP_CONFIGURATION_TOKEN` is only needed if the commented Git backend is re-enabled.
 
 User service:
 

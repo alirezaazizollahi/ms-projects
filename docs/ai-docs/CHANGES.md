@@ -2,6 +2,18 @@
 
 Use this file as the human-readable change log for the project. Add entries for code, configuration, database, API, dependency, and documentation changes.
 
+## 2026-07-18
+
+### Added
+
+- Added native `configdemo` configuration files under `configserver/src/main/resources/config`.
+
+### Changed
+
+- Switched the config server to the `native` profile with `classpath:/config` as the search location.
+- Commented the previous Git-backed config server backend for future remote repository use.
+- Updated `configdemo` defaults to use native build metadata instead of environment placeholder values.
+
 ## 2026-07-14
 
 ### Added

@@ -9,12 +9,12 @@ EmbarkX is currently a Spring Boot based ecommerce backend split into independen
 
 | Service | Path | Runtime Port | Database | Main Responsibility |
 | --- | --- | ---: | --- | --- |
-| Config Server | `configserver` | `8888` | n/a | Centralized external configuration from Git and encrypted property support |
+| Config Server | `configserver` | `8888` | n/a | Centralized external configuration from native classpath files and encrypted property support |
 | User Service | `user-ms` | `8082` | `userdb` | User profiles, roles, and addresses |
 | Product Service | `product-ms` | `8083` | `product` | Product catalog, stock fields, soft delete, search |
 | Order Service | `order-ms` | `8084` | `order` | Cart items and order creation |
 
-The ecommerce services currently share package naming under `com.raalapp.ecommerce`, but each service is its own Maven project with its own application entry point, database configuration, model classes, repositories, controllers, and service layer. The config server uses package `com.raalapp` and serves configuration from the external Git repository configured in `configserver/src/main/resources/application.yaml`.
+The ecommerce services currently share package naming under `com.raalapp.ecommerce`, but each service is its own Maven project with its own application entry point, database configuration, model classes, repositories, controllers, and service layer. The config server uses package `com.raalapp` and currently serves native configuration files from `configserver/src/main/resources/config`.
 
 ## Documentation Map
 

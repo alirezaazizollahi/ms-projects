@@ -5,14 +5,19 @@ spring:
   application:
     name: configserver
 
+  profiles:
+    active: native
   cloud:
     config:
       server:
-        git:
-          uri: https://github.com/alirezaazizollahi/app-configuration.git
-          default-label: master
-          username: alirezaazizollahi
-          password: ${APP_CONFIGURATION_TOKEN}
+        native:
+          search-locations: classpath:/config
+        #fetch config from remote git repository
+#        git:
+#          uri: https://github.com/alirezaazizollahi/app-configuration.git
+#          default-label: master
+#          username: alirezaazizollahi
+#          password: ${APP_CONFIGURATION_TOKEN}
 
 # encrypt property using AES algorithm
 #encrypt:

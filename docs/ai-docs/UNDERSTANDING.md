@@ -23,13 +23,13 @@ The current architecture is a simple ecommerce backend split by business capabil
 ```text
 Client
   |
-  |-- configserver : Spring Cloud Config Server backed by Git
+  |-- configserver : Spring Cloud Config Server backed by native classpath config
   |-- user-ms    : user profiles and addresses
   |-- product-ms : product catalog
   |-- order-ms   : cart and order placement
 ```
 
-There is currently no API gateway, service discovery, message broker, shared authentication layer, or inter-service HTTP client implementation in the code. Some comments indicate planned Keycloak and product-service validation work, but the first version stores local IDs and uses fixed placeholder values in the order service. The config server is configured to read from `https://github.com/alirezaazizollahi/app-configuration.git`.
+There is currently no API gateway, service discovery, message broker, shared authentication layer, or inter-service HTTP client implementation in the code. Some comments indicate planned Keycloak and product-service validation work, but the first version stores local IDs and uses fixed placeholder values in the order service. The config server is configured with the `native` profile and reads files from `classpath:/config`.
 
 ## Stack
 
@@ -55,8 +55,8 @@ Owns externalized configuration delivery:
 
 - Runs on port `8888`.
 - Uses Spring Cloud Config Server with `@EnableConfigServer`.
-- Reads configuration from the Git repository configured under `spring.cloud.config.server.git`.
-- Authenticates to the Git repository with the `APP_CONFIGURATION_TOKEN` environment variable.
+- Reads configuration from native classpath files under `configserver/src/main/resources/config`.
+- Keeps the previous Git backend settings commented in `application.yaml` for future remote repository use.
 - Enables RSA-backed encryption using `config-server.jks`.
 
 ### User Service

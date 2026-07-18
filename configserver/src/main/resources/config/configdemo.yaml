@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: configdemo
+
+#  profiles:
+#    active: dev
+
+
+#build:
+#  id: ${ID}
+#  version: ${VERSION}
+#  name: ${NAME}
+
+build:
+  id: 101
+  type: 1.2.3
+  name: "Native Default-Production-Build"
+  version: "Native Default Build"
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh

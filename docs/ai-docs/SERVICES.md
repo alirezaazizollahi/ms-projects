@@ -21,17 +21,19 @@ Runtime:
 
 `ConfigserverApplication` enables Spring Cloud Config Server with `@EnableConfigServer`.
 
-The server reads externalized configuration from:
+The server currently reads externalized configuration from native classpath files:
 
 ```text
-https://github.com/alirezaazizollahi/app-configuration.git
+configserver/src/main/resources/config
 ```
 
-The Git backend uses:
+Current config files:
 
-- Default label: `master`
-- Username: `alirezaazizollahi`
-- Password token source: `APP_CONFIGURATION_TOKEN`
+- `configdemo.yaml`: default `configdemo` configuration and default native build metadata.
+- `configdemo-dev.yaml`: dev profile placeholder file with no active overrides.
+- `configdemo-prod.yaml`: prod profile native build metadata.
+
+The previous Git backend settings remain commented in `configserver/src/main/resources/application.yaml` for future remote repository use.
 
 The service is also configured for RSA-backed property encryption through `config-server.jks` with alias `config-server-key`.
 

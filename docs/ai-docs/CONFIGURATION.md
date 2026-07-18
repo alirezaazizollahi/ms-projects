@@ -22,23 +22,26 @@ Runtime:
 - Main class: `com.raalapp.ConfigserverApplication`
 - Spring Cloud Config Server is enabled with `@EnableConfigServer`
 
-Git backend:
+Native backend:
 
 ```yaml
 spring:
+  profiles:
+    active: native
   cloud:
     config:
       server:
-        git:
-          uri: https://github.com/alirezaazizollahi/app-configuration.git
-          default-label: master
-          username: alirezaazizollahi
-          password: ${APP_CONFIGURATION_TOKEN}
+        native:
+          search-locations: classpath:/config
 ```
 
-Required environment:
+Native config files:
 
-- `APP_CONFIGURATION_TOKEN`: token used by the config server to access the Git-backed configuration repository.
+- `configserver/src/main/resources/config/configdemo.yaml`: default `configdemo` configuration.
+- `configserver/src/main/resources/config/configdemo-dev.yaml`: dev profile placeholder with no active overrides.
+- `configserver/src/main/resources/config/configdemo-prod.yaml`: prod profile configuration.
+
+The previous Git backend block is currently commented in `configserver/src/main/resources/application.yaml`. Re-enabling Git-backed configuration would require restoring that backend and providing `APP_CONFIGURATION_TOKEN`.
 
 Encryption:
 
