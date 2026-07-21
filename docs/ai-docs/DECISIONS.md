@@ -76,6 +76,26 @@ Consequence:
 - `configdemo` can retrieve default and profile-specific configuration from the config server classpath.
 - Remote Git-backed configuration must be explicitly re-enabled before it is used again.
 
+## 2026-07-21: Add Spring Cloud Bus Refresh for Config Demo
+
+Context:
+
+- `config-demo` needs to pick up configuration changes from the config server without manually refreshing every service instance.
+- Local development should keep using the native config repository while testing refresh behavior.
+
+Decision:
+
+- Add Spring Cloud Bus AMQP dependencies to `configserver` and `config-demo`.
+- Expose actuator `busrefresh` on the config server and expose both `refresh` and `busrefresh` on `config-demo`.
+- Use local RabbitMQ defaults at `localhost:5672` with `guest` credentials.
+- Activate the `dev` profile in `config-demo` so profile-specific native configuration is loaded by default.
+
+Consequence:
+
+- Local bus refresh testing now requires RabbitMQ.
+- The native config server search location is pinned to the local config directory path for the current workspace.
+- Runtime refresh behavior is now coupled to RabbitMQ availability.
+
 ## Current Architecture: Independent Spring Boot Maven Services
 
 Context:

@@ -1,0 +1,17 @@
+build:
+  id: 101
+  type: 3.2.1
+  name: "Native Dev-Build 1234222211"
+  version: "Native Dev Build"
+
+rabbitmq:
+  host: localhost
+  port: 5672
+  username: guest
+  password: guest
+
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: "busrefresh"

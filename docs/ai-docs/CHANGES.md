@@ -14,6 +14,20 @@ Use this file as the human-readable change log for the project. Add entries for 
 - Commented the previous Git-backed config server backend for future remote repository use.
 - Updated `configdemo` defaults to use native build metadata instead of environment placeholder values.
 
+## 2026-07-21
+
+### Added
+
+- Added Spring Cloud Bus AMQP support to `configserver` and `config-demo`.
+- Added RabbitMQ connection defaults for local config refresh testing.
+- Populated `configdemo-dev.yaml` with dev build metadata and RabbitMQ defaults.
+
+### Changed
+
+- Exposed `busrefresh` actuator support for config refresh propagation.
+- Activated the `dev` profile by default in `config-demo`.
+- Updated the config server native search location to the local config directory path.
+
 ## 2026-07-14
 
 ### Added

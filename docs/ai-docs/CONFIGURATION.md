@@ -31,17 +31,27 @@ spring:
   cloud:
     config:
       server:
+        health:
+          enabled: false
         native:
-          search-locations: classpath:/config
+          search-locations: file:///home/alireza/projects/my-projects/microservices/embarkX/ms-projects/configserver/src/main/resources/config
 ```
 
 Native config files:
 
 - `configserver/src/main/resources/config/configdemo.yaml`: default `configdemo` configuration.
-- `configserver/src/main/resources/config/configdemo-dev.yaml`: dev profile placeholder with no active overrides.
+- `configserver/src/main/resources/config/configdemo-dev.yaml`: dev profile build metadata and RabbitMQ defaults.
 - `configserver/src/main/resources/config/configdemo-prod.yaml`: prod profile configuration.
 
 The previous Git backend block is currently commented in `configserver/src/main/resources/application.yaml`. Re-enabling Git-backed configuration would require restoring that backend and providing `APP_CONFIGURATION_TOKEN`.
+
+Config refresh:
+
+- `configserver` and `config-demo` include Spring Cloud Bus AMQP support.
+- Both services use RabbitMQ at `localhost:5672` with `guest` / `guest`.
+- `configserver` exposes the actuator `busrefresh` endpoint.
+- `config-demo` exposes actuator `refresh` and `busrefresh` endpoints.
+- `config-demo` activates the `dev` profile by default, so it receives `configdemo-dev.yaml` overrides from the config server.
 
 Encryption:
 
@@ -118,7 +128,13 @@ Config server dependencies:
 
 - `org.springframework.boot:spring-boot-starter-parent:4.1.0`
 - `org.springframework.cloud:spring-cloud-config-server`
+- `org.springframework.cloud:spring-cloud-starter-bus-amqp`
+- `org.springframework.boot:spring-boot-starter-actuator`
 - Spring Cloud dependency BOM `2025.1.2`
+
+Config demo dependencies:
+
+- `org.springframework.cloud:spring-cloud-starter-bus-amqp`
 
 Additional mapping dependency:
 

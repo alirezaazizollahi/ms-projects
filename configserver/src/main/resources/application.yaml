@@ -10,9 +10,23 @@ spring:
   cloud:
     config:
       server:
+        health:
+          enabled: false
         native:
-          search-locations: classpath:/config
-        #fetch config from remote git repository
+          search-locations: file:///home/alireza/projects/my-projects/microservices/embarkX/ms-projects/configserver/src/main/resources/config
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "busrefresh"
+#fetch config from remote git repository
 #        git:
 #          uri: https://github.com/alirezaazizollahi/app-configuration.git
 #          default-label: master

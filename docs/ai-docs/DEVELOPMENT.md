@@ -6,6 +6,7 @@
 - Docker and Docker Compose
 - Maven Wrapper from each service directory
 - PostgreSQL client access or pgAdmin for creating service databases
+- RabbitMQ on `localhost:5672` for Spring Cloud Bus refresh flows
 
 ## Start Local Infrastructure
 
@@ -22,6 +23,8 @@ Then create the databases expected by services:
 - `order`
 
 The current Compose file creates only `mydb` automatically.
+
+Start RabbitMQ separately before using `/actuator/busrefresh`; the current Compose file does not define a RabbitMQ service.
 
 pgAdmin is available at:
 
@@ -48,6 +51,8 @@ cd configserver
 ```
 
 The config server currently runs with the `native` profile and loads configuration from `configserver/src/main/resources/config`. `APP_CONFIGURATION_TOKEN` is only needed if the commented Git backend is re-enabled.
+
+`config-demo` currently activates the `dev` profile by default and can receive refresh events through Spring Cloud Bus when RabbitMQ is running locally.
 
 User service:
 
