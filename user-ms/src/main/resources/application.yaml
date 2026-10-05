@@ -1,21 +1,5 @@
-server:
-  port: 8082
-
 spring:
   application:
-    name: user-ms
-  mongodb:
-    uri: mongodb://admin:admin123@localhost:27017/userdb?authSource=admin
-
-  jpa:
-    hibernate:
-      ddl-auto: update   # options: create, create-drop, update, validate, none
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-
-  sql:
-    init:
-      mode: always   # optional: runs schema.sql/data.sql if exists
+    name: user-service
+  config:
+    import: optional:configserver:http://localhost:8888

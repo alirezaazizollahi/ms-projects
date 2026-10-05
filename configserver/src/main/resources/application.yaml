@@ -10,7 +10,7 @@ spring:
   cloud:
     config:
       server:
-        health:
+        health: 
           enabled: false
         native:
           search-locations: file:///home/alireza/projects/my-projects/microservices/embarkX/ms-projects/configserver/src/main/resources/config
@@ -43,3 +43,5 @@ encrypt:
     location: config-server.jks
     password: changeit
     alias: config-server-key
+
+
