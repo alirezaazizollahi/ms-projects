@@ -5,6 +5,7 @@
 | Service | Port | Config File |
 | --- | ---: | --- |
 | Config Server | `8888` | `configserver/src/main/resources/application.yaml` |
+| Eureka Server | `8761` | `eureka/src/main/resources/application.yaml` |
 | User Service | `8082` | `user-ms/src/main/resources/application.yaml` |
 | Product Service | `8083` | `product-ms/src/main/resources/application.yaml` |
 | Order Service | `8084` | `order-ms/src/main/resources/application.yaml` |
@@ -39,9 +40,13 @@ spring:
 
 Native config files:
 
-- `configserver/src/main/resources/config/configdemo.yaml`: default `configdemo` configuration.
-- `configserver/src/main/resources/config/configdemo-dev.yaml`: dev profile build metadata and RabbitMQ defaults.
-- `configserver/src/main/resources/config/configdemo-prod.yaml`: prod profile configuration.
+- `configserver/src/main/resources/config/order-service.yaml`: order service port, PostgreSQL, RabbitMQ, actuator, and Eureka settings.
+- `configserver/src/main/resources/config/product-service.yaml`: product service port, PostgreSQL, RabbitMQ, actuator, and Eureka settings.
+- `configserver/src/main/resources/config/user-service.yaml`: user service port, MongoDB, JPA, RabbitMQ, actuator, and Eureka settings.
+
+`config-demo` has local configuration files in its own resources directory; the
+files ending in `yaml1` are not standard Spring YAML filenames and are not
+assumed to be active profiles.
 
 The previous Git backend block is currently commented in `configserver/src/main/resources/application.yaml`. Re-enabling Git-backed configuration would require restoring that backend and providing `APP_CONFIGURATION_TOKEN`.
 
@@ -67,13 +72,16 @@ The keystore file is currently stored at `configserver/src/main/resources/config
 
 ## Database Configuration
 
-All services use PostgreSQL with username `admin` and password `admin123`.
+The checked-in remote configs use `${DB_USER}` / `${DB_PASSWORD}` for the
+PostgreSQL services. The user service config currently uses MongoDB for its URI
+and also declares JPA settings; confirm intended persistence before relying on
+that combination. Do not infer active credentials from old documentation.
 
 | Service | JDBC URL | Database Name |
 | --- | --- | --- |
-| User Service | `jdbc:postgresql://localhost:5432/userdb` | `userdb` |
-| Product Service | `jdbc:postgresql://localhost:5432/product` | `product` |
-| Order Service | `jdbc:postgresql://localhost:5432/order` | `order` |
+| User Service | Mongo URI in `user-service.yaml` | `userdb` |
+| Product Service | `jdbc:postgresql://localhost:5432/products` | `products` |
+| Order Service | `jdbc:postgresql://localhost:5432/orders` | `orders` |
 
 JPA settings currently used:
 
@@ -91,24 +99,8 @@ spring:
       mode: always
 ```
 
-## Docker Compose
-
-Infrastructure file: `files/docker-compose-postgres-pagadmin.yml`
-
-Services:
-
-- `postgres`
-  - Image: `postgres:14.22-trixie`
-  - Container name: `postgres-db`
-  - Exposes `5432:5432`
-  - Default database: `mydb`
-- `pgadmin`
-  - Image: `dpage/pgadmin4:latest`
-  - Container name: `pgadmin`
-  - Exposes `5050:80`
-  - Login: `admin@example.com` / `admin123`
-
-Important: the Compose file creates default database `mydb`, while the services expect `userdb`, `product`, and `order`. Create those databases manually in PostgreSQL or update the infrastructure setup before starting all services.
+No Docker Compose file is currently present in this repository. Start/configure
+PostgreSQL, MongoDB, and RabbitMQ separately for local runs.
 
 ## Maven and Dependencies
 

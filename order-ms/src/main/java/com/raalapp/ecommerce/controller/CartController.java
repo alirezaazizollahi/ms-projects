@@ -21,14 +21,14 @@ public class CartController {
     public ResponseEntity<String> addToCart(
             @RequestBody CartItemRequest request) {
         if (!cartService.addToCart(request)) {
-            return ResponseEntity.badRequest().body("Not able to complete the request");
+            return ResponseEntity.badRequest().body("Product out of Stock or User or Product not found");
         }
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @DeleteMapping("/items/{productId}")
     public ResponseEntity<Void> removeFromCart(
-            @RequestHeader("X-User-ID") Long userId,
+            @RequestHeader("X-User-ID") String userId,
             @PathVariable Long productId) {
         boolean deleted = cartService.deleteItemFromCart(userId, productId);
         return deleted ? ResponseEntity.noContent().build()
@@ -37,7 +37,7 @@ public class CartController {
 
     @GetMapping
     public ResponseEntity<List<CartItem>> getCart(
-            @RequestHeader("X-User-ID") Long userId) {
+            @RequestHeader("X-User-ID") String userId) {
         return ResponseEntity.ok(cartService.getCart(userId));
     }
 

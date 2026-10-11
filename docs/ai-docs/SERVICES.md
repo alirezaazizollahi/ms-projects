@@ -1,5 +1,60 @@
 # Services
 
+## Infrastructure applications
+
+### Eureka (`eureka`)
+
+- Entry point: `com.raalapp.EurekaApplication`, annotated with
+  `@EnableEurekaServer`.
+- Port: `8761`.
+- Eureka server mode disables client self-registration and registry fetching.
+
+### Config Server (`configserver`)
+
+- Entry point: `com.raalapp.ConfigserverApplication`, annotated with
+  `@EnableConfigServer`.
+- Port: `8888`; native profile serves
+  `configserver/src/main/resources/config`.
+- Service configs are keyed by `order-service`, `product-service`, and
+  `user-service`.
+- Includes RabbitMQ bus support and a keystore for config encryption.
+
+### Config demo (`config-demo`)
+
+- A separate Spring Cloud Config client demonstration with a build-info
+  controller; it is not part of the ecommerce request flow.
+- Two profile files use the unusual `.yaml1` suffix and may not be loaded by
+  Spring as YAML configuration.
+
+## Ecommerce services
+
+### User Service (`user-ms`)
+
+- Entry point: `com.raalapp.ecommerce.UserApplication`; port `8082` is remotely
+  configured.
+- Owns user/address models, repository, mapper, service, and REST controller.
+- Its config declares a MongoDB URI as well as JPA properties; verify intended
+  persistence before treating it as operational.
+
+### Product Service (`product-ms`)
+
+- Entry point: `com.raalapp.ecommerce.ProductApplication`; port `8083` is
+  remotely configured.
+- Owns the product model, repository, mapper, service, and REST controller.
+- Registers as `product-service`, the discovery name used by the order client.
+
+### Order Service (`order-ms`)
+
+- Entry point: `com.raalapp.ecommerce.OrderApplication`; port `8084` is remotely
+  configured.
+- Owns cart/order models, repositories, services, and REST controllers.
+- Calls `product-service` through a Spring HTTP interface and load-balanced
+  `RestClient`.
+- Cart price is currently hardcoded in `CartService`; order creation clears
+  the cart. See [API.md](API.md) and [DATA-MODEL.md](DATA-MODEL.md).
+- See [STARTUP-TROUBLESHOOTING.md](STARTUP-TROUBLESHOOTING.md) for Eureka
+  client warnings.
+
 ## Config Server
 
 Path: `configserver`
@@ -27,11 +82,8 @@ The server currently reads externalized configuration from native classpath file
 configserver/src/main/resources/config
 ```
 
-Current config files:
-
-- `configdemo.yaml`: default `configdemo` configuration and default native build metadata.
-- `configdemo-dev.yaml`: dev profile placeholder file with no active overrides.
-- `configdemo-prod.yaml`: prod profile native build metadata.
+Current config files are `order-service.yaml`, `product-service.yaml`, and
+`user-service.yaml`; each provides external settings for its matching client.
 
 The previous Git backend settings remain commented in `configserver/src/main/resources/application.yaml` for future remote repository use.
 
@@ -45,8 +97,9 @@ Runtime:
 
 - Application class: `com.raalapp.ecommerce.UserApplication`
 - Port: `8082`
-- Spring application name: `user-ms`
-- Database URL: `jdbc:postgresql://localhost:5432/userdb`
+- Spring application name: `user-service`
+- MongoDB URI is currently configured remotely; persistence setup should be
+  reconciled with the JPA entity/repository code.
 
 ### Main Packages
 

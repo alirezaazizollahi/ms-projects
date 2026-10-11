@@ -1,43 +1,37 @@
 # Development Guide
 
+## Local startup order
+
+The services are independent Maven projects. For an integrated local run:
+
+1. Start PostgreSQL, MongoDB if needed by user service, and RabbitMQ.
+2. Start `eureka`; confirm `http://localhost:8761` is reachable.
+3. Start `configserver`; check
+   `http://localhost:8888/order-service/default` returns configuration.
+4. Start `product-ms`, `user-ms`, then `order-ms`.
+
+Config imports are optional, but services can still fail later if a required
+database or broker is unavailable. `order-ms` has a Eureka client wiring issue
+documented in [STARTUP-TROUBLESHOOTING.md](STARTUP-TROUBLESHOOTING.md).
+
+Each project can be launched from its directory with `./mvnw spring-boot:run`.
+Use `./mvnw test` there to run that project's tests. This guide does not claim
+those commands were run during repository exploration.
+
 ## Prerequisites
 
 - Java 25
-- Docker and Docker Compose
+- Docker (if using local containerized infrastructure)
 - Maven Wrapper from each service directory
 - PostgreSQL client access or pgAdmin for creating service databases
 - RabbitMQ on `localhost:5672` for Spring Cloud Bus refresh flows
 
 ## Start Local Infrastructure
 
-From repository root:
-
-```bash
-docker compose -f files/docker-compose-postgres-pagadmin.yml up -d
-```
-
-Then create the databases expected by services:
-
-- `userdb`
-- `product`
-- `order`
-
-The current Compose file creates only `mydb` automatically.
-
-Start RabbitMQ separately before using `/actuator/busrefresh`; the current Compose file does not define a RabbitMQ service.
-
-pgAdmin is available at:
-
-```text
-http://localhost:5050
-```
-
-Default pgAdmin credentials:
-
-```text
-admin@example.com
-admin123
-```
+This repository currently contains no Docker Compose file. Configure PostgreSQL
+databases `products` and `orders` plus the MongoDB database used by user service
+according to the active config files. Start RabbitMQ at `localhost:5672` for
+Spring Cloud Bus refresh flows.
 
 ## Run Services
 
@@ -52,7 +46,8 @@ cd configserver
 
 The config server currently runs with the `native` profile and loads configuration from `configserver/src/main/resources/config`. `APP_CONFIGURATION_TOKEN` is only needed if the commented Git backend is re-enabled.
 
-`config-demo` currently activates the `dev` profile by default and can receive refresh events through Spring Cloud Bus when RabbitMQ is running locally.
+`config-demo` is an optional config client demonstration, separate from the
+ecommerce service startup flow.
 
 User service:
 

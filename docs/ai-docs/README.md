@@ -10,9 +10,10 @@ EmbarkX is currently a Spring Boot based ecommerce backend split into independen
 | Service | Path | Runtime Port | Database | Main Responsibility |
 | --- | --- | ---: | --- | --- |
 | Config Server | `configserver` | `8888` | n/a | Centralized external configuration from native classpath files and encrypted property support |
-| User Service | `user-ms` | `8082` | `userdb` | User profiles, roles, and addresses |
-| Product Service | `product-ms` | `8083` | `product` | Product catalog, stock fields, soft delete, search |
-| Order Service | `order-ms` | `8084` | `order` | Cart items and order creation |
+| Eureka Server | `eureka` | `8761` | n/a | Service registration and discovery |
+| User Service | `user-ms` | `8082` | MongoDB URI configured | User profiles, roles, and addresses |
+| Product Service | `product-ms` | `8083` | `products` | Product catalog, stock fields, soft delete, search |
+| Order Service | `order-ms` | `8084` | `orders` | Cart items and order creation |
 
 The ecommerce services currently share package naming under `com.raalapp.ecommerce`, but each service is its own Maven project with its own application entry point, database configuration, model classes, repositories, controllers, and service layer. The config server uses package `com.raalapp` and currently serves native configuration files from `configserver/src/main/resources/config`.
 
@@ -24,11 +25,12 @@ The ecommerce services currently share package naming under `com.raalapp.ecommer
 | [SERVICES.md](SERVICES.md) | Detailed notes for each microservice: controllers, services, repositories, DTOs, entities, and business behavior |
 | [API.md](API.md) | Current HTTP endpoints and request/response behavior |
 | [DATA-MODEL.md](DATA-MODEL.md) | Entity and persistence model for all services |
-| [CONFIGURATION.md](CONFIGURATION.md) | Ports, databases, Docker Compose, Maven dependencies, and runtime configuration |
+| [CONFIGURATION.md](CONFIGURATION.md) | Ports, databases, Maven dependencies, and runtime configuration |
 | [DEVELOPMENT.md](DEVELOPMENT.md) | Local development commands, startup order, testing, and documentation workflow |
 | [DECISIONS.md](DECISIONS.md) | Architectural and implementation decisions made so far |
 | [CHANGES.md](CHANGES.md) | Human-readable change log for future project evolution |
 | [OPEN-QUESTIONS.md](OPEN-QUESTIONS.md) | Known gaps and decisions still waiting for design or implementation |
+| [STARTUP-TROUBLESHOOTING.md](STARTUP-TROUBLESHOOTING.md) | Evidence and diagnosis for the order-service Eureka startup warnings |
 
 ## Update Rule
 

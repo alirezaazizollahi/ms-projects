@@ -7,8 +7,8 @@ The repository root contains Spring Boot microservices, a Spring Cloud Config Se
 ```text
 ms-projects/
   configserver/
-  files/
-    docker-compose-postgres-pagadmin.yml
+  eureka/
+  config-demo/
   order-ms/
   product-ms/
   user-ms/
@@ -21,15 +21,15 @@ Each microservice is currently an independent Maven project. There is no parent 
 The current architecture is a simple ecommerce backend split by business capability, with a config server added for centralized external configuration:
 
 ```text
-Client
-  |
-  |-- configserver : Spring Cloud Config Server backed by native classpath config
-  |-- user-ms    : user profiles and addresses
-  |-- product-ms : product catalog
-  |-- order-ms   : cart and order placement
+                    +--> user-service (8082)
+Client --> services +--> product-service (8083) <-- order-service (8084)
+                    +--> order-service (8084)
+
+All service configs --> configserver (8888)
+All service registration/discovery --> eureka (8761)
 ```
 
-There is currently no API gateway, service discovery, message broker, shared authentication layer, or inter-service HTTP client implementation in the code. Some comments indicate planned Keycloak and product-service validation work, but the first version stores local IDs and uses fixed placeholder values in the order service. The config server is configured with the `native` profile and reads files from `classpath:/config`.
+Eureka discovery and RabbitMQ-backed Spring Cloud Bus dependencies are present. The order service has a load-balanced HTTP client for product lookups. There is no API gateway or active shared authentication layer. The config server is configured with the `native` profile and serves files from `configserver/src/main/resources/config`.
 
 ## Stack
 
@@ -39,13 +39,14 @@ There is currently no API gateway, service discovery, message broker, shared aut
 | Framework | Spring Boot 4.0.6 |
 | Web | Spring Web MVC starter |
 | Persistence | Spring Data JPA / Hibernate |
-| Database | PostgreSQL |
+| Persistence | PostgreSQL configs for product/order; MongoDB URI configured for user |
 | Build Tool | Maven Wrapper per service |
 | Boilerplate | Lombok |
 | Mapping | MapStruct configured in user/product services; manually mapped in most service code |
 | External Config | Spring Cloud Config Server in `configserver` |
 | Tests | Spring Boot generated context tests exist per service |
-| Local Infra | Docker Compose for PostgreSQL and pgAdmin |
+| Discovery | Eureka Server on port `8761` |
+| Messaging/config refresh | RabbitMQ-backed Spring Cloud Bus (localhost defaults) |
 
 ## Service Responsibilities
 
@@ -88,11 +89,12 @@ Owns cart and order data:
 ## Important Current Limitations
 
 - No service-to-service validation is implemented yet.
-- `order-ms` does not fetch product price or product availability from `product-ms`.
+- `order-ms` has a product-service client, but cart price is still hardcoded; verify live request behavior before relying on the client for business rules.
 - `order-ms` does not validate user existence against `user-ms`.
 - No authentication or authorization is active.
+- The order service currently exposes Eureka client warnings because its global load-balanced `RestClient.Builder` is also selected by Eureka's client; see [STARTUP-TROUBLESHOOTING.md](STARTUP-TROUBLESHOOTING.md).
 - Keycloak-related code exists only as comments in `user-ms`.
 - No migrations tool is configured; Hibernate `ddl-auto: update` manages schema changes.
-- Databases named in service configs differ from the Docker Compose default database.
+- No Docker Compose file is currently present in this repository.
 - No root-level build orchestration exists for all services together.
 - Config server keystore password and alias are currently stored in application YAML and should be externalized before production use.

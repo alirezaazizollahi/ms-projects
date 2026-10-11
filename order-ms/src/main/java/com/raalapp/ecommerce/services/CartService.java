@@ -1,7 +1,11 @@
 package com.raalapp.ecommerce.services;
 
 
+import com.raalapp.ecommerce.clients.ProductServiceClient;
+import com.raalapp.ecommerce.clients.UserServiceClient;
 import com.raalapp.ecommerce.dtos.CartItemRequest;
+import com.raalapp.ecommerce.dtos.ProductResponse;
+import com.raalapp.ecommerce.dtos.UserResponse;
 import com.raalapp.ecommerce.models.CartItem;
 import com.raalapp.ecommerce.repositories.CartItemRepository;
 import jakarta.transaction.Transactional;
@@ -15,6 +19,9 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional
 public class CartService {
+
+    private final ProductServiceClient productServiceClient;
+    private final UserServiceClient userServiceClient;
     private final CartItemRepository cartItemRepository;
     int attempt = 0;
 
@@ -22,6 +29,14 @@ public class CartService {
     public boolean addToCart(CartItemRequest request) {
         System.out.println("ATTEMPT COUNT: " + ++attempt);
         // Look for product
+
+        ProductResponse productResponse = productServiceClient.getProductDetails(request.getProductId().toString());
+        if (productResponse == null || productResponse.getStockQuantity() <  request.getQuantity())
+            return false;
+
+        UserResponse userDetails = userServiceClient.getUserDetails(request.getUserId().toString());
+        if (userDetails == null)
+            return false;
 
         CartItem existingCartItem = cartItemRepository.findByUserIdAndProductId(request.getUserId(), request.getProductId());
         if (existingCartItem != null) {
@@ -48,7 +63,7 @@ public class CartService {
         return false;
     }
 
-    public boolean deleteItemFromCart(Long userId, Long productId) {
+    public boolean deleteItemFromCart(String userId, Long productId) {
         CartItem cartItem = cartItemRepository.findByUserIdAndProductId(userId, productId);
 
         if (cartItem != null){
@@ -58,11 +73,11 @@ public class CartService {
         return false;
     }
 
-    public List<CartItem> getCart(Long userId) {
+    public List<CartItem> getCart(String userId) {
         return cartItemRepository.findByUserId(userId);
     }
 
-    public void clearCart(Long userId) {
+    public void clearCart(String userId) {
         cartItemRepository.deleteByUserId(userId);
     }
 }
