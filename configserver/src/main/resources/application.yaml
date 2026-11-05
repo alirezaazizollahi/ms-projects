@@ -43,5 +43,3 @@ encrypt:
     location: config-server.jks
     password: changeit
     alias: config-server-key
-
-
